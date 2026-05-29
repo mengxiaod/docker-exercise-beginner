@@ -1,0 +1,21 @@
+services:
+  processor:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+    environment:
+      - LOG_LEVEL=INFO
+
+  viewer:
+    image: python:3.10-slim
+    volumes:
+      - ./output:/app/output
+    command: >
+      bash -c "
+        echo 'Waiting for results...' &&
+        sleep 2 &&
+        cat /app/output/result.json
+      "
+    depends_on:
+      - processor
